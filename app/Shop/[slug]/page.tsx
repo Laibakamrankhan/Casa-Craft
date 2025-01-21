@@ -2,12 +2,9 @@
 import AddToCartButton from '@/app/component/AddToCartButton';
 import { client } from '@/sanity/lib/client';
 import Image from 'next/image'
-import { useState, useEffect } from "react";
-interface Props {
-  params: {
-    slug: string;
-  };
-}
+import { useState, useEffect, use } from "react";
+
+
 interface Product {
   name: string;
   description: string;
@@ -31,24 +28,24 @@ async function fetchData(slug: string): Promise<Product[]> {
       dimensions,
       category,
       quantity,
-      "slug": slug.current
-    }`,
+      "slug": slug.current}`,
     { slug }
   );
 }
 
-export default function Page({ params }: Props) {
-  const { slug } = params;
-  const [data, setData] = useState<Product | null>(null); // 🔹 Fixed type here
+export default function Page({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = use(params); 
+  const { slug } = resolvedParams;
+  const [data, setData] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function getData() {
       try {
         const fetchedData = await fetchData(slug);
-        setData(fetchedData?.[0] || null); // 🔹 Ensuring data holds a single product
+        setData(fetchedData?.[0] || null);
       } catch (error) {
-        console.error("Error fetching data", error);
+        console.error('Error fetching data', error);
       } finally {
         setLoading(false);
       }
@@ -64,8 +61,7 @@ export default function Page({ params }: Props) {
     return <div>Product not found</div>;
   }
 
-  const product = data; // 🔹 No more `data?.[0]`, since `data` is already a single Product
-
+  const product = data;
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="flex flex-wrap md:flex-nowrap">
       <div style={{ flex: 1 }}className="flex justify-center md:block">
@@ -76,6 +72,8 @@ export default function Page({ params }: Props) {
             alt={product.name}
             style={{ width: '432px', height: '500px', objectFit: 'cover' }}
            className="ml-[197px]  mt-16 max-w-full md:w-[432px] md:h-[500px]"
+           width={432}
+           height={500}
           />
         )}
       </div>
