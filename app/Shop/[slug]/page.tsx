@@ -1,18 +1,17 @@
-import * as React from 'react'
+'use client'
 import AddToCartButton from '@/app/component/AddToCartButton';
 import { client } from '@/sanity/lib/client';
-import { use } from "react";
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
 
 interface Props {
   params: {
     slug: string;
   };
-  searchParams?: Record<string, string | string[] | undefined>;
 }
 
 async function fetchData(slug: string) {
-  return await client.fetch(
+  return client.fetch(
     `*[_type == "product" && slug.current == $slug]{
       name,
       description,
@@ -27,9 +26,25 @@ async function fetchData(slug: string) {
     { slug }
   );
 }
+
 export default function Page({ params }: Props) {
   const { slug } = params;
-  const data = use(fetchData(slug)); 
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function getData() {
+      try {
+        const fetchedData = await fetchData(slug);
+        setData(fetchedData?.[0]);
+      } catch (error) {
+        console.error("Error fetching data", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    getData();
+  }, [slug]);
 
   const product = data?.[0];
 
