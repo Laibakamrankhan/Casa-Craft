@@ -1,16 +1,26 @@
 'use client'
 import AddToCartButton from '@/app/component/AddToCartButton';
 import { client } from '@/sanity/lib/client';
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
-
+import Image from 'next/image'
+import { useState, useEffect } from "react";
 interface Props {
   params: {
     slug: string;
   };
 }
+interface Product {
+  name: string;
+  description: string;
+  image: string;
+  price: number;
+  style: string;
+  dimensions?: { width?: number; height?: number }; 
+  category: string;
+  quantity: number;
+  slug: string;
+}
 
-async function fetchData(slug: string) {
+async function fetchData(slug: string): Promise<Product[]> {
   return client.fetch(
     `*[_type == "product" && slug.current == $slug]{
       name,
@@ -29,14 +39,14 @@ async function fetchData(slug: string) {
 
 export default function Page({ params }: Props) {
   const { slug } = params;
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<Product | null>(null); // 🔹 Fixed type here
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function getData() {
       try {
         const fetchedData = await fetchData(slug);
-        setData(fetchedData?.[0]);
+        setData(fetchedData?.[0] || null); // 🔹 Ensuring data holds a single product
       } catch (error) {
         console.error("Error fetching data", error);
       } finally {
@@ -45,6 +55,7 @@ export default function Page({ params }: Props) {
     }
     getData();
   }, [slug]);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -53,12 +64,8 @@ export default function Page({ params }: Props) {
     return <div>Product not found</div>;
   }
 
+  const product = data; // 🔹 No more `data?.[0]`, since `data` is already a single Product
 
-  const product = data?.[0];
-
-  if (!product) {
-    return <div>Product not found</div>;
-  }
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="flex flex-wrap md:flex-nowrap">
       <div style={{ flex: 1 }}className="flex justify-center md:block">
