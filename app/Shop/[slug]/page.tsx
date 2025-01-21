@@ -45,6 +45,14 @@ export default function Page({ params }: Props) {
     }
     getData();
   }, [slug]);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!data) {
+    return <div>Product not found</div>;
+  }
+
 
   const product = data?.[0];
 
