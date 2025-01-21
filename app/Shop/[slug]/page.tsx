@@ -2,7 +2,8 @@
 import AddToCartButton from '@/app/component/AddToCartButton';
 import { client } from '@/sanity/lib/client';
 import Image from 'next/image'
-import { useState, useEffect, use } from "react";
+import { useParams } from 'next/navigation';
+import { useState, useEffect } from "react";
 
 
 interface Product {
@@ -33,13 +34,16 @@ async function fetchData(slug: string): Promise<Product[]> {
   );
 }
 
-export default function Page({ params }: { params: Promise<{ slug: string }> }) {
-  const resolvedParams = use(params); 
-  const { slug } = resolvedParams;
+export default function Page() {
+  const params = useParams(); // ✅ Get params using useParams()
+  const slug = params?.slug as string; // ✅ Extract slug safely
+
   const [data, setData] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!slug) return; // Prevents fetching if slug is missing
+
     async function getData() {
       try {
         const fetchedData = await fetchData(slug);
@@ -50,6 +54,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         setLoading(false);
       }
     }
+
     getData();
   }, [slug]);
 
@@ -62,6 +67,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
   }
 
   const product = data;
+
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="flex flex-wrap md:flex-nowrap">
       <div style={{ flex: 1 }}className="flex justify-center md:block">
