@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { IoSearch } from "react-icons/io5";
 import { client } from "@/sanity/lib/client";
+import Image from "next/image";
 
 interface Product {
   _id: string;
@@ -76,7 +77,7 @@ const SearchBar: React.FC = () => {
               className="flex items-center p-2 border rounded-lg shadow-sm hover:bg-gray-100 transition"
             >
               {item.image && (
-                <img src={item.image} alt={item.name} className="w-12 h-12 rounded-md mr-3" />
+                <Image src={item.image} alt={item.name} className="w-12 h-12 rounded-md mr-3" />
               )}
               <span className="text-gray-700 font-medium">
                 {item.name} - ${item.price}

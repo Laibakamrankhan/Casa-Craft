@@ -11,7 +11,7 @@ import Hoverbutton from "../component/Hoverbutton";
 interface Product {
   _id: string;
   name: string;
-  image: any; 
+  image: string; 
   price: number;
   discountedPrice?: number;
   productdescription: string;

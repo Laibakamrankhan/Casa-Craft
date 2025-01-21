@@ -2,6 +2,7 @@ import * as React from 'react'
 import AddToCartButton from '@/app/component/AddToCartButton';
 import { client } from '@/sanity/lib/client';
 import { use } from "react";
+import Image from 'next/image';
 
 interface Props {
   params: {
@@ -39,7 +40,7 @@ export default function Page({ params }: Props) {
       <div style={{ flex: 1 }}className="flex justify-center md:block">
        
         {product.image && (
-          <img
+          <Image
             src={product.image}
             alt={product.name}
             style={{ width: '432px', height: '500px', objectFit: 'cover' }}

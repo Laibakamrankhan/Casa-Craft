@@ -1,4 +1,5 @@
 'use client'
+import Image from "next/image";
 import React, { useState, useEffect } from "react";
 type CartItem = {
   _id: string;
@@ -75,7 +76,7 @@ const Page = () => {
             <ul className="space-y-4">
               {cartItems.map((item) => (
                 <li key={item._id} className="flex items-center justify-between gap-4 border-b pb-3">
-                  <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-md" />
+                  <Image src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded-md" />
                   <div className="flex-1">
                     <span className="block font-medium">{item.name}</span>
                     <span className="text-gray-600 text-sm">Qty: {item.quantity}</span>

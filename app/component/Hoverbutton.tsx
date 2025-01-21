@@ -8,9 +8,9 @@ interface Product {
 }
 export default function Hoverbutton ({ product }: { product: Product }) {
   const handleAddToCart = () => {
-    let cart = JSON.parse(localStorage.getItem("Cart") || "[]");
+    const cart = JSON.parse(localStorage.getItem("Cart") || "[]");
 
-    const existingItem = cart.find((item: any) => item.slug === product.slug);
+    const existingItem = cart.find((item:Product) => item.slug === product.slug);
 
     if (existingItem) {
       existingItem.quantity += 1;

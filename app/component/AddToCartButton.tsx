@@ -9,7 +9,7 @@ interface Product {
 }
 export default function AddToCartButton({ product }: { product: Product }) {
   const handleAddToCart = () => {
-    let cart = JSON.parse(localStorage.getItem("Cart") || "[]");
+    const cart = JSON.parse(localStorage.getItem("Cart") || "[]");
 
     const existingItem = cart.find((item:Any) => item.slug === product.slug);
 

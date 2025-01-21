@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import RemoveFromCartButton from "../component/RemoveFromCartButton";
 import Link from "next/link";
+import Image from "next/image";
 interface Product {
   name: string;
   price: number;
@@ -23,7 +24,7 @@ export default function Cart() {
 
   const handleRemove = (productSlug: string) => {
     if (typeof window !== "undefined") {
-      let cart = JSON.parse(localStorage.getItem("Cart") || "[]");
+     const cart = JSON.parse(localStorage.getItem("Cart") || "[]");
 
       // Find item by slug
       const itemIndex = cart.findIndex((item: Product) => item.slug === productSlug);
@@ -52,7 +53,7 @@ export default function Cart() {
           {cartItems.map((item) => (
             <div key={item.slug} className="flex justify-between items-center border-b pb-4">
               <div className="flex items-center gap-4">
-                <img 
+                <Image 
                   src={item.image || "/placeholder-image.png"} 
                   alt={item.name} 
                   className="w-20 h-20 object-cover"
