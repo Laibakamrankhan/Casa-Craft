@@ -77,7 +77,9 @@ const SearchBar: React.FC = () => {
               className="flex items-center p-2 border rounded-lg shadow-sm hover:bg-gray-100 transition"
             >
               {item.image && (
-                <Image src={item.image} alt={item.name} className="w-12 h-12 rounded-md mr-3" />
+                <Image src={item.image} alt={item.name} className="w-12 h-12 rounded-md mr-3"
+                height={12}
+                width={12} />
               )}
               <span className="text-gray-700 font-medium">
                 {item.name} - ${item.price}
