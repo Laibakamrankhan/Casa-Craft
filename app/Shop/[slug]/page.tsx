@@ -67,8 +67,7 @@ const Page = () => {
     fetchData();
   }, [slug]);
 
-  if (notFoundState) return notFound();
-  if (loading) return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  
 
   return (
     <div className="flex flex-wrap md:flex-nowrap justify-between items-center">
