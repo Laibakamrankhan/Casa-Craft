@@ -22,7 +22,7 @@ interface Product {
 }
 
 async function fetchProductData(slug: string): Promise<Product | null> {
-  const productQuery = `*[_type == "product" && slug.current == $slug][0]{
+  const productQuery = `*[_type == "product" && slug.current == $slug{
       name,
       description,
       image,
