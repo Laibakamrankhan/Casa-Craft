@@ -3,7 +3,7 @@
 import AddToCartButton from '@/app/component/AddToCartButton';
 import { client } from '@/sanity/lib/client';
 import Image from 'next/image';
-import { notFound, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 interface Product {
@@ -22,17 +22,17 @@ interface Product {
 }
 
 async function fetchProductData(slug: string): Promise<Product | null> {
-  const productQuery = `*[_type == "product" && slug.current == $slug{
+  const productQuery = `*[_type == "product" && slug.current == $slug][0]{
       name,
       description,
-      image,
+      "image": image.asset->url,
       price,
       style,
       dimensions,
       category,
       quantity,
       "slug": slug.current
-    }`;
+  }`;
 
   try {
     return await client.fetch(productQuery, { slug });
@@ -43,23 +43,27 @@ async function fetchProductData(slug: string): Promise<Product | null> {
 }
 
 const Page = () => {
-  const { slug } = useParams();  // Get the params object using useParams
+  const { slug } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [notFoundState, setNotFoundState] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
+  const [notFoundState, setNotFoundState] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!slug) return;
 
-      // Handle slug being a string or string[] (array)
       const slugValue = Array.isArray(slug) ? slug[0] : slug;
+
+      setLoading(true);
+      setNotFoundState(false);
 
       const fetchedProduct = await fetchProductData(slugValue);
       if (!fetchedProduct) {
         setNotFoundState(true);
+        setLoading(false);
         return;
       }
+
       setProduct(fetchedProduct);
       setLoading(false);
     };
@@ -67,12 +71,18 @@ const Page = () => {
     fetchData();
   }, [slug]);
 
-  
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (notFoundState) {
+    return <p>Product not found</p>;
+  }
 
   return (
     <div className="flex flex-wrap md:flex-nowrap justify-between items-center">
       <div className="flex justify-center md:block w-full md:w-1/2">
-        {product && product.image && (
+        {product?.image ? (
           <Image
             src={product.image}
             alt={product.name}
@@ -80,6 +90,8 @@ const Page = () => {
             height={500}
             className="ml-[197px] mt-16 max-w-full object-cover"
           />
+        ) : (
+          <p>Image not available</p>
         )}
       </div>
       <div className="w-full md:w-1/2 px-4 text-center md:text-left">
